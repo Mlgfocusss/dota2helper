@@ -1,0 +1,284 @@
+@import 'tailwindcss';
+
+/* Токены дизайн‑системы (SPEC 2.1) */
+:root {
+  --bg: #0a0a0c;
+  --surface: #131316;
+  --surface-2: #1b1c21;
+  --border: #26272d;
+  --text: #ededef;
+  --text-muted: #8a8b93;
+  /* в SPEC #5E5F66, но у него контраст 3.1:1 — чуть светлее ради требования ≥ 4.5:1 */
+  --text-dim: #7c7d84;
+  --accent: #c9d6ee;
+  --on-accent: #121418;
+  --accent-2: #7480c4;
+  --win: #8fd1a8;
+  --win-strong: #3fbf7f;
+  --loss: #e8888a;
+  --loss-strong: #e5484d;
+  --radiant: #3fbf7f;
+  --dire: #e5484d;
+  --pos1: #6b7be0;
+  --pos2: #3fb8b0;
+  --pos3: #e8a030;
+  --pos4: #e0603f;
+  --pos5: #3fcf9a;
+
+  --header-h: 64px;
+  --nav-h: 72px;
+  --nav-offset: 12px;
+  --content-bottom: 108px;
+}
+
+@theme {
+  --color-*: initial;
+  --color-white: #fff;
+  --color-black: #000;
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+
+  --radius-card: 16px;
+  --radius-btn: 14px;
+  --radius-plate: 10px;
+
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --animate-progress: progress 2.5s cubic-bezier(0.1, 0.6, 0.3, 1) forwards;
+
+  /* анимируем свойство translate: его же задаёт класс -translate-x-full */
+  @keyframes shimmer {
+    100% {
+      translate: 100% 0;
+    }
+  }
+  @keyframes progress {
+    from {
+      width: 0;
+    }
+    to {
+      width: 85%;
+    }
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--border);
+  --color-fg: var(--text);
+  --color-muted: var(--text-muted);
+  --color-dim: var(--text-dim);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-accent-2: var(--accent-2);
+  --color-win: var(--win);
+  --color-win-strong: var(--win-strong);
+  --color-loss: var(--loss);
+  --color-loss-strong: var(--loss-strong);
+  --color-radiant: var(--radiant);
+  --color-dire: var(--dire);
+  --color-pos1: var(--pos1);
+  --color-pos2: var(--pos2);
+  --color-pos3: var(--pos3);
+  --color-pos4: var(--pos4);
+  --color-pos5: var(--pos5);
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border);
+  }
+
+  html {
+    background: var(--bg);
+    color: var(--text);
+    color-scheme: dark;
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv11';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    /* тонкий тёмный скроллбар, место под него зарезервировано — контент не прыгает */
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--bg);
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--accent-2) 45%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent-2);
+    outline-offset: 2px;
+  }
+
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  summary {
+    cursor: pointer;
+  }
+
+  img {
+    user-select: none;
+  }
+}
+
+@layer components {
+  /* Контейнер страницы: ширина задаётся через --page-w (SPEC 2.5) */
+  .page {
+    width: min(var(--page-w, 760px), calc(100% - 48px));
+    margin-inline: auto;
+    padding-top: 28px;
+  }
+
+  .text-page-title {
+    font-size: 32px;
+    line-height: 40px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .text-section-title {
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .text-card-title {
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 600;
+  }
+
+  /* подписи‑капсом («ТВОЙ ПРОФИЛЬ») */
+  .caps {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* Текст новости из Steam (HTML после санитайзера) */
+  .news-content {
+    font-size: 16px;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+  }
+  .news-content > * + * {
+    margin-top: 14px;
+  }
+  .news-content h2 {
+    margin-top: 32px;
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 600;
+  }
+  .news-content h3,
+  .news-content h4 {
+    margin-top: 26px;
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 600;
+  }
+  .news-content a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklab, var(--accent) 45%, transparent);
+    text-underline-offset: 3px;
+  }
+  .news-content a:hover {
+    text-decoration-color: var(--accent);
+  }
+  .news-content img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+  }
+  .news-content ul,
+  .news-content ol {
+    padding-left: 22px;
+  }
+  .news-content ul {
+    list-style: disc;
+  }
+  .news-content ol {
+    list-style: decimal;
+  }
+  .news-content li + li {
+    margin-top: 6px;
+  }
+  .news-content li::marker {
+    color: var(--text-dim);
+  }
+  .news-content blockquote {
+    border-left: 3px solid var(--border);
+    padding-left: 14px;
+    color: var(--text-muted);
+  }
+  .news-content details {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    padding: 12px 16px;
+  }
+  .news-content summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .news-content details[open] summary {
+    margin-bottom: 8px;
+  }
+  .news-content pre {
+    overflow-x: auto;
+    border-radius: 10px;
+    background: var(--surface-2);
+    padding: 12px 14px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+  }
+  .news-content hr {
+    border-color: var(--border);
+  }
+
+  @media (max-width: 767px) {
+    .page {
+      width: min(var(--page-w, 760px), calc(100% - 32px));
+      padding-top: 16px;
+    }
+    .text-page-title {
+      font-size: 26px;
+      line-height: 32px;
+    }
+    .text-section-title {
+      font-size: 20px;
+      line-height: 26px;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *:not(.animate-spin),
+  *:not(.animate-spin)::before,
+  *:not(.animate-spin)::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

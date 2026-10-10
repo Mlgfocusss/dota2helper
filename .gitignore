@@ -1,0 +1,19 @@
+# секреты
+.env
+.env.local
+*.local
+
+# фронтенд
+node_modules/
+frontend/dist/
+frontend/coverage/
+*.tsbuildinfo
+
+# бэкенд
+backend/bin/
+*.exe
+
+# редакторы и ОС
+.idea/
+.DS_Store
+Thumbs.db
